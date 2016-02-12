@@ -25,15 +25,14 @@
         .col-lg-4
           Catalog
         .col-lg-8
-          - for raw_entry in entries:
+          - for entry in entries:
             .panel
-              - entry = parse(raw_entry.text)
               %h3= entry.get('FN')
               %p= entry.get('ORG')
               %a.btn.btn-link(href="#"+entry.get('UID')+"_raw", dataToggle="collapse")
                 raw vcard
               .panel.collapse(id=entry.get('UID')+"_raw")
-                %pre= raw_entry.text
+                %pre= u'\n'.join(map(lambda kv: u'%s:%s' % kv, entry.items()))
     / jQuery (necessary for Bootstrap's JavaScript plugins)
     %script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js")
     / Include all compiled plugins (below), or include individual files as needed
