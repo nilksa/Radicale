@@ -20,15 +20,22 @@
           %h1 Contacts
       .row
         .col-lg-12
-          A B C
+          - for letter, n in sorted(abc.items()):
+            %a(href='#')
+              = letter
+            %span.text-muted= u"(%d)" % n
       .row
         .col-lg-4
-          Catalog
+          %ul
+            - for org in orgs:
+              %li
+                %a(href='#')
+                  = org
         .col-lg-8
           - for entry in entries:
             .panel
               %h3= entry.get('FN')
-              %p= entry.get('ORG')
+              %p= entry.get('TITLE', '') + ', ' + entry.get('ORG', '')  
               %a.btn.btn-link(href="#"+entry.get('UID')+"_raw", dataToggle="collapse")
                 raw vcard
               .panel.collapse(id=entry.get('UID')+"_raw")

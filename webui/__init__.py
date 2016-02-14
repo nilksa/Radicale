@@ -35,10 +35,39 @@ def parse_raw(cards):
     return map(card2dict, output)
 
 
+def build_abc_index(entries):
+    abc={}
+    for e in entries:
+        fl = e.get('FN', '_').upper()
+        if len(fl) == 0:
+            fl = '_'
+        else:
+            fl = fl[0] 
+        if fl not in abc:
+            abc[fl] = 0
+        abc[fl] += 1
+    return abc
+
+def build_org_index(entries):
+    orgs = {}
+    for e in entries:
+        org = e.get('ORG', '_').upper() 
+        if org not in orgs:
+            orgs[org]=0
+        orgs[org] += 1
+    return orgs
+
 @get('/')
 def index():
-    items = storage.ical.Collection.from_path('/nilksa/AddressBook')
-    return haml_template(tmpl, entries=parse_raw(items[1].text))
+    items = storage.ical.Collection.from_path('/test/carddav')
+    if len(items) < 2:
+        collection_text = ""
+    else:
+        collection_text = u'\n'.join(map(lambda i:i.text, items[1:]))
+    entries = parse_raw(collection_text)
+    abc_index = build_abc_index(entries)
+    org_index = build_org_index(entries)
+    return haml_template(tmpl, entries=parse_raw(collection_text), abc=abc_index, orgs=org_index)
 
 @get('/static/<path:path>')
 def serve_static(path):
